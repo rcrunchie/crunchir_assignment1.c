@@ -194,9 +194,9 @@ void main() {
     double total_sa[n];
     double volumes[n];
     
-    for(int i = 0; i < n; i++)
+    for(int i = 1; i <= n; i++)
     {
-        printf("Obtaining data for spherical segment number %d", i);
+        printf("Obtaining data for spherical segment number %d \n", i);
     
         //ask user "What is the radius of the sphere(R)?"
         printf("What is the radius of the sphere(R)?");
