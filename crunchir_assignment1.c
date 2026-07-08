@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 //compile using gcc --std=gnu99 -o t try.c -lm
 
@@ -43,10 +44,6 @@ double a, b, h;
     total_sa = tsa + bsa + lsa
     v = (1/6)(pi)(h)(3a^2 + 3b^2 + h^2)
 */
-
-int main() {
-
-}
 
 //a = sqrt(R^2 - (ha)^2)
 double calculate_a(double R, double ha) {
@@ -131,7 +128,7 @@ bool check_ha(double ha, double hb) {
 }
 
 //integrate all parameter checks
-bool validate_value(double R, double ha, double hb) {
+bool validate_values(double R, double ha, double hb) {
     int counter = 0;
 
     if(check_parameters(R, ha, hb))
@@ -150,9 +147,17 @@ bool validate_value(double R, double ha, double hb) {
     
 }
 
+bool check_seg_num(int n)
+{
+    if(n>=2 && n<=10)
+        return true;
+    else
+        return false;
+}
+
 //average all total surface areas
 double average_sa(double total_sa[]) {
-    int array_len = sizeof(total_sa)/sizeof(total_sa);
+    int array_len = *(&total_sa + 1) - total_sa;
     int total = 0;
 
     for(int i = 0; i < array_len; i++)
@@ -165,7 +170,7 @@ double average_sa(double total_sa[]) {
 
 //average all volumes
 double average_v(double volumes[]) {
-    int array_len = sizeof(volumes)/sizeof(volumes);
+    int array_len = *(&volumes + 1) - volumes;
     int total = 0;
 
     for(int i = 0; i < array_len; i++)
@@ -176,3 +181,61 @@ double average_v(double volumes[]) {
     return total/array_len;
 }
 
+void main() {
+    bool seg_check = false;
+    while (!seg_check)
+    {
+        printf("How many spherical segments you want to evaluate [2-10]?");
+        scanf("%d", &n);
+        seg_check = check_seg_num(n);
+    }
+
+    //create total sa and v arrays
+    double total_sa[n];
+    double volumes[n];
+    
+    for(int i = 0; i < n; i++)
+    {
+        printf("Obtaining data for spherical segment number %d", i);
+    
+        //ask user "What is the radius of the sphere(R)?"
+        printf("What is the radius of the sphere(R)?");
+        scanf("%lf\n", &R);
+
+        //ask user "What is the height of the top area of the spherical segment(ha)?"
+        printf("What is the height of the top area of the spherical segment(ha)?");
+        scanf("%lf\n", &ha);
+
+        //ask user "What is the height of the bottom area of the spherical segment(hb)?"
+        printf("What is the height of the bottom area of the spherical segment(hb)?");
+        scanf("%lf\n", &hb);
+
+        //print "Entered data: R = ha = hb = ."
+        printf("Entered data: R = %lf\n ha = %lf\n hb = %lf\n.", R, ha, hb);
+
+        bool check_param = false;
+        while(!check_param)
+        {
+            check_param = validate_values(R, ha, hb);
+            //print "Invalid Input."
+            printf("Invalid Input.");
+        }
+
+        double a = calculate_a(R, ha);
+        double b = calculate_b(R, hb);
+        double h = calculate_h(ha, hb);
+        double total_sa = calculate_total_sa(a, b, R, h);
+        double v = calculate_v(a, b, h);
+        
+        //print "Total Surface Area = Volume = ."
+        printf("Total Surface Area = %lf\n Volume = %lf\n.", total_sa, v);
+    }
+
+    double total_sa_avg = average_sa(total_sa);
+    double v_avg = average_v(volumes);
+
+    //print "Total average results:"
+    printf("Total average results:");
+    //print "Average Surface Area = Average Volume = ."
+    printf("Average Surface Area = %lf\n Average Volume = %lf\n.", total_sa_avg, v_avg);
+}
