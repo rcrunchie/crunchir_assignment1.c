@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdbool.h>
 
 //compile using gcc --std=gnu99 -o t try.c -lm
 
@@ -49,32 +50,32 @@ int main() {
 
 //a = sqrt(R^2 - (ha)^2)
 double calculate_a(double R, double ha) {
-    return 
+    return sqrt(pow(R, 2) - pow(ha, 2)); 
 }
 
 //b = sqrt(R^2 - (hb)^2)
 double calculate_b(double R, double hb) {
-    
+    return sqrt(pow(R, 2) - pow(hb, 2));
 }
 
 //h = ha - hb
 double calculate_h(double ha, double hb) {
-    
+    return ha - hb;
 }
 
 //tsa = (pi)a^2
 double calculate_tsa(double a) {
-    
+    return (pi) * pow(a, 2);
 }
 
 //bsa = (pi)b^2
 double calculate_bsa(double b) {
-    
+    return (pi) * pow(b, 2);
 }
 
 //lsa = 2(pi)R*h
 double calculate_lsa(double R, double h) {
-    
+    return 2 * pi * R * h; 
 }
 
 //total_sa = tsa + bsa + lsa
@@ -84,22 +85,49 @@ double calculate_total_sa(double a, double b, double R, double h) {
 
 //v = (1/6)(pi)(h)(3a^2 + 3b^2 + h^2)
 double calculate_v(double a, double b, double h) {
-    
+    return 0.2 * pi * h * ((3 * pow(a, 2)) + (3 * pow(b, 2)) + pow(h, 2));
 }
 
 //R, ha, and hb but must positive real values
 bool check_parameters(double R, double ha, double hb) {
+    int counter = 0;
 
+    if(R >=0)
+        counter++;
+    else if(ha >= 0)
+        counter++;
+    else if(hb >= 0)
+        counter++;
+
+    if(counter<3)
+        return false;
+    else if(counter == 3)
+        return true;
+    else   
+        return false;
 }
 
 //ha and hb must never be bigger than R
 bool check_hs(double R, double ha, double hb) {
+    int counter = 0;
+
+    if(R > ha)
+        counter++;
+    else if(R > hb)
+        counter++;
+    
+    if(counter<2)
+        return false;
+    else if(counter == 2)
+        return true;
+    else   
+        return false;
 
 }
 
 //ha must be bigger than or equal to hb
 bool check_ha(double ha, double hb) {
-
+    return ha>=hb;
 }
 
 //integrate all parameter checks
@@ -125,15 +153,26 @@ bool validate_value(double R, double ha, double hb) {
 //average all total surface areas
 double average_sa(double total_sa[]) {
     int array_len = sizeof(total_sa)/sizeof(total_sa);
+    int total = 0;
 
     for(int i = 0; i < array_len; i++)
     {
-
+        total += total_sa[i];
     }
+
+    return total/array_len;
 }
 
 //average all volumes
-double average_v() {
+double average_v(double volumes[]) {
+    int array_len = sizeof(volumes)/sizeof(volumes);
+    int total = 0;
 
+    for(int i = 0; i < array_len; i++)
+    {
+        total += volumes[i];
+    }
+
+    return total/array_len;
 }
 
